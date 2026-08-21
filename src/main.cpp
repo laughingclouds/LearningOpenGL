@@ -3,8 +3,31 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
+
 int main() {
-	std::cout << "hello lol" << std::endl;
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", NULL, NULL);
+
+	if (window == NULL) {
+		std::cerr << "Failed to create GLFW widnow" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		std::cerr << "Failed to initialize GLAD" << std::endl;
+		return -1;
+	}
 
 	return 0;
 }
