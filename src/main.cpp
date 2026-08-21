@@ -38,9 +38,13 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	
 	while (!glfwWindowShouldClose(window)) {
-
+		// input
 		processInput(window);
 
+		// rendering commands
+
+
+		// check and call events and swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
