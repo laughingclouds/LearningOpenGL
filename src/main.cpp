@@ -8,6 +8,8 @@
 #define WINDOW_HEIGHT 600
 
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -29,5 +31,20 @@ int main() {
 		return -1;
 	}
 
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	
+	while (!glfwWindowShouldClose(window)) {
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
 	return 0;
+}
+
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
 }
