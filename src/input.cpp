@@ -1,8 +1,30 @@
+#include <array>
+
 #include "input.hpp"
 
 #include <GLFW/glfw3.h>
 
 #include "render-state.hpp"
+#include "exercise.hpp"
+
+static void processExerciseSelection(GLFWwindow* window, bool ctrlPressed) {
+	if (!ctrlPressed)
+		return;
+
+	static constexpr std::array exerciseBindings = {
+		std::pair{GLFW_KEY_0, exercise::DEFAULT_TRIANGLE},
+		std::pair{GLFW_KEY_1, exercise::RECTANGLE},
+		std::pair{GLFW_KEY_2, exercise::TWO_TRIANGLES},
+		std::pair{GLFW_KEY_3, exercise::TWO_TRIANGLES_2VAO_2VBO},
+	};
+
+	for (const auto& [key, type] : exerciseBindings) {
+		if (glfwGetKey(window, key) == GLFW_PRESS) {
+			exercise::type = type;
+			break;
+		}
+	}
+}
 
 void processInput(GLFWwindow* window) {
 	static bool key_p_ispress = false;
@@ -25,4 +47,6 @@ void processInput(GLFWwindow* window) {
 	if ((glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)) {
 		key_p_ispress = false; // key no longer pressed
 	}
+
+	processExerciseSelection(window, key_ctrl_ispress);
 }
