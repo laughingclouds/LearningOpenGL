@@ -38,7 +38,7 @@ int main() {
 	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", NULL, NULL);
 
 	if (window == NULL) {
-		std::cerr << "Failed to create GLFW widnow" << std::endl;
+		std::cerr << "Failed to create GLFW widnow";
 		glfwTerminate();
 		return -1;
 	}
@@ -93,7 +93,8 @@ int main() {
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-
+	
+	// vertex data
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
@@ -105,6 +106,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
