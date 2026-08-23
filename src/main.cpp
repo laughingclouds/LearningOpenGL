@@ -34,6 +34,16 @@ int main() {
 		return -1;
 	}
 
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f
+	};
+
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
 	while (!glfwWindowShouldClose(window)) {
 		// input
 		processInput(window);
