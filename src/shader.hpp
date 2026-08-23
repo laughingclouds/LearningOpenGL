@@ -1,3 +1,4 @@
 #pragma once
+#include <utility>
 
-unsigned int createShaderProgram();
+std::pair<unsigned int, unsigned int> createShaderPrograms();

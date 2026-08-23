@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 
 #include <glad/glad.h>
 
@@ -11,7 +12,7 @@ void main() {
 }
 )";
 
-const char* fragmentShaderSource = R"(
+const char* fragmentShaderSourceOrange = R"(
 #version 330 core
 out vec4 FragColor;
 
@@ -20,52 +21,79 @@ void main() {
 }
 )";
 
-unsigned int createShaderProgram() {
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
+const char* fragmentShaderSourceYellow = R"(
+#version 330 core
+out vec4 FragColor;
 
+void main() {
+	FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+}
+)";
+
+enum class QueryType {
+	VERTEX,
+	FRAGMENT,
+	PROGRAM
+};
+
+using statusQuery_t = void (*) (GLuint, GLenum, GLint*);
+using infoLog_t = void (*) (GLuint, GLsizei, GLsizei*, GLchar*);
+
+static  const char* errorMessage(QueryType qt) {
+	switch (qt) {
+	case QueryType::VERTEX: return "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n";
+	case QueryType::FRAGMENT: return "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n";
+	case QueryType::PROGRAM: return "ERROR::SHADER::PROGRAM::LINKING_FAILED\n";
+	}
+	return "ERROR::UNKNOWN\n";
+}
+
+/* For both (shader) compile and (program) link */
+static void statusCheck(statusQuery_t statusQuery, infoLog_t getInfoLog, GLuint object, GLenum en, QueryType qt) {
 	GLint success;
 	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 
+	statusQuery(object, en, &success);
 	if (!success) {
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr
-			<< "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-			<< infoLog;
+		getInfoLog(object, 512, nullptr, infoLog);
+		std::cerr << errorMessage(qt) << infoLog;
 	}
+}
 
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
+/* Create shader, set source and compile. And invoke statusCheck */
+static GLuint createShader(GLenum shaderType, const char *shaderSource, QueryType qt) {
+	GLuint shader = glCreateShader(shaderType);
+	glShaderSource(shader, 1, &shaderSource, nullptr);
+	glCompileShader(shader);
 
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	statusCheck(glGetShaderiv, glGetShaderInfoLog, shader, GL_COMPILE_STATUS, qt);
 
-	if (!success) {
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cerr
-			<< "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
-			<< infoLog;
-	}
+	return shader;
+}
 
-	// shader program
-	unsigned int shaderProgram = glCreateProgram();
+static GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
+	GLuint shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
 
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cerr
-			<< "ERROR:SHADER::PROGRAM::LINKING_FAILED\n"
-			<< infoLog;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	statusCheck(glGetProgramiv, glGetProgramInfoLog, shaderProgram, GL_LINK_STATUS, QueryType::PROGRAM);
 
 	return shaderProgram;
+}
+
+std::pair<GLuint, GLuint> createShaderPrograms() {
+	GLuint vertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource, QueryType::VERTEX);
+	GLuint fragmentShaderOrange = createShader(GL_FRAGMENT_SHADER, fragmentShaderSourceOrange, QueryType::FRAGMENT);
+	GLuint fragmentShaderYellow = createShader(GL_FRAGMENT_SHADER, fragmentShaderSourceYellow, QueryType::FRAGMENT);
+
+	// shader program
+	GLuint shaderProgramOrange = createProgram(vertexShader, fragmentShaderOrange);
+	GLuint shaderProgramYellow = createProgram(vertexShader, fragmentShaderYellow);
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShaderOrange);
+	glDeleteShader(fragmentShaderYellow);
+
+	return std::pair{shaderProgramOrange, shaderProgramYellow};
 }
