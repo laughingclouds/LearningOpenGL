@@ -21,6 +21,10 @@
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\toggle_glPolygonMode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\toggle-polygon-mode.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

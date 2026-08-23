@@ -3,11 +3,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "toggle-polygon-mode.hpp"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
-bool isPolygonMode = false;
 
 const char* vertexShaderSource = R"(
 #version 330 core
@@ -127,7 +126,8 @@ int main() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (isPolygonMode())
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
@@ -162,18 +162,20 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void processInput(GLFWwindow* window) {
+	static bool key_p_ispress = false;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		isPolygonMode = !isPolygonMode;
+	// enter only if key was not pressed before
+	if (!key_p_ispress && (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)) {
+		toggle_glPolygonMode();
+		key_p_ispress = true; // now key is in "pressing" state
+		// don't enter if-block again till the key is released
+	}
 
-		if (isPolygonMode) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
+	if ((glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)) {
+		key_p_ispress = false; // key no longer pressed
 	}
 }
