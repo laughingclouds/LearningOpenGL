@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 /* state always remains 1-to-1 with which mode is enabled.
 	false = GL_FILL
