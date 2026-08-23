@@ -39,9 +39,28 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cerr << "Failed to initialize GLAD" << std::endl;
+		std::cerr << "Failed to initialize GLAD";
 		return -1;
 	}
+
+	unsigned int vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+
+	{
+		GLint success;
+		char infoLog[512];
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+
+		if (!success) {
+			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+			std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+				<< infoLog;
+		}
+	}
+
+	glDeleteShader(vertexShader);
 
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
@@ -49,14 +68,11 @@ int main() {
 		0.0f, 0.5f, 0.0f
 	};
 
-	unsigned int VBO, vertexShader;
+	unsigned int VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
@@ -70,6 +86,8 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	
+	glDeleteBuffers(1, &VBO);
 
 	glfwTerminate();
 	return 0;
