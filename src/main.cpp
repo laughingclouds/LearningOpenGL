@@ -7,6 +7,8 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+bool isPolygonMode = false;
+
 const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -96,15 +98,17 @@ int main() {
 	
 	// vertex data
 	float vertices[] = {
-		0.5f, 0.5f, 0.0f, // top right
-		0.5f, -0.5f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, // bottom left
-		-0.5f, 0.5f, 0.0f // top left
+		0.5f, 0.5f, 0.0f,	// 0 - top right
+		0.5f, -0.5f, 0.0f,	// 1 - bottom right
+		-0.5f, -0.5f, 0.0f,	// 2 - bottom left
+		-0.5f, 0.5f, 0.0f,	// 3 - top left
+		0.0f, -0.5f, 0.0f,	// 4 - center bottom
+		0.0f, 0.5f, 0.0f,	// 5 - center top
 	};
 
 	unsigned int indices[] = {
-		0, 1, 3, // first triangle
-		1, 2, 3 // second triangle
+		3, 2, 4, // first triangle
+		0, 4, 1 // second triangle
 	};
 
 	unsigned int VBO, VAO, EBO;
@@ -160,5 +164,16 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		isPolygonMode = !isPolygonMode;
+
+		if (isPolygonMode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 	}
 }
