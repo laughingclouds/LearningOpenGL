@@ -6,9 +6,12 @@ namespace exercise {
 		RECTANGLE,
 		TWO_TRIANGLES, // next to each other
 		TWO_TRIANGLES_2VAO_2VBO, // different VAO, VBO
+		TWO_TRIANGLES_DIFF_COL,
 	};
 
 	extern Type type;
+
+	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2);
 
 	void draw2Ts2VAOs2VBOs();
 

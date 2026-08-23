@@ -43,6 +43,10 @@ static unsigned int VBO_2Ts, VAO_2Ts;
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
 
+	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2) {
+
+	}
+
 	void draw2Ts2VAOs2VBOs() {
 		draw2Ts(3);
 
