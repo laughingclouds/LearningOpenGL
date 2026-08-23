@@ -35,23 +35,28 @@ unsigned int indices[] = {
 	6, 7, 8,	// T2
 };
 
-static unsigned int VBO, VAO, EBO;
+static GLuint VBO, VAO, EBO;
 
 // Two triangles
-static unsigned int VBO_2Ts, VAO_2Ts;
+static GLuint VBO_2Ts, VAO_2Ts;
 
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
 
-	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2) {
+	void draw2TsDiffCol(GLuint shaderProg1, GLuint shaderProg2) {
+		glUseProgram(shaderProg1);
+		draw2Ts(3);
 
+		glUseProgram(shaderProg2);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
 	}
 
 	void draw2Ts2VAOs2VBOs() {
 		draw2Ts(3);
 
 		glBindVertexArray(VAO);
-		glad_glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
 	}
 
 	void draw2Ts(int count) {
