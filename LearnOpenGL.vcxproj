@@ -20,11 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\init.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\toggle_glPolygonMode.cpp" />
+    <ClCompile Include="src\render-state.cpp" />
+    <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\toggle-polygon-mode.hpp" />
+    <ClInclude Include="src\init.hpp" />
+    <ClInclude Include="src\input.hpp" />
+    <ClInclude Include="src\shader.hpp" />
+    <ClInclude Include="src\render-state.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
