@@ -7,6 +7,15 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+const char* vertexShaderSource = R"(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+void main() {
+	gl_Position = vec4(aPos..x, aPos.y, aPos.z, 1.0);
+}
+)";
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -40,10 +49,14 @@ int main() {
 		0.0f, 0.5f, 0.0f
 	};
 
-	unsigned int VBO;
+	unsigned int VBO, vertexShader;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
