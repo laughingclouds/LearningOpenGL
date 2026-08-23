@@ -3,28 +3,81 @@
 #include <glad/glad.h>
 
 // vertex data
+float vertices_2Ts[] = {
+	// triangle T1
+	-0.5f, 0.0f, 0.0f,	// 0: T1 - Left
+	-0.25f, 0.5f, 0.0f,	// 1: T1 - Top
+	0.0f, 0.0f, 0.0f,	// 2: T1 - Right
+	// triangle T2
+	0.0f, 0.0f, 0.0f,	// 3: T2 - Left
+	0.25f, 0.5f, 0.0f,	// 4: T2 - Top
+	0.5f, 0.0f, 0.0f,	// 5: T2 - Right
+};
+
 float vertices[] = {
+	// DEFAULT_TRIANGLE
 	0.0f, 0.5f, 0.0f,	// 0 - center top
 	-0.5f, -0.5f, 0.0f,	// 1 - bottom left
 	0.5f, -0.5f, 0.0f,	// 2 - bottom right
+	//
 	-0.5f, 0.5f, 0.0f,	// 3 - top left
 	0.5f, 0.5f, 0.0f,	// 4 - top right
 	0.0f, -0.5f, 0.0f,	// 5 - center bottom
+	//
+	0.0f, 0.0f, 0.0f,	// 6 T2
+	0.25f, 0.5f, 0.0f,	// 7 T2
+	0.5f, 0.0f, 0.0f,	// 8 T2
 };
 
 unsigned int indices[] = {
-	3, 2, 4, // first triangle
-	0, 4, 1 // second triangle
+	3, 1, 2,	// first triangle
+	4, 3, 2,	// second triangle
+	6, 7, 8,	// T2
 };
 
 static unsigned int VBO, VAO, EBO;
 
+// Two triangles
+static unsigned int VBO_2Ts, VAO_2Ts;
+
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
+
+	void draw2Ts2VAOs2VBOs() {
+		draw2Ts(3);
+
+		glBindVertexArray(VAO);
+		glad_glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
+	}
+
+	void draw2Ts(int count) {
+		glBindVertexArray(VAO_2Ts);
+		glDrawArrays(GL_TRIANGLES, 0, count);
+	}
+
+	void drawRectangle() {
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
 
 	void drawDefaultTriangle() {
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+	}
+
+	void base2Ts() {
+		glGenVertexArrays(1, &VAO_2Ts);
+		glGenBuffers(1, &VBO_2Ts);
+
+		glBindVertexArray(VAO_2Ts);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_2Ts);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_2Ts), vertices_2Ts, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void base() {	
@@ -42,11 +95,16 @@ namespace exercise {
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind (VBO remains attached to VAO)
 	}
 
 	void clean() {
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
+
+		glDeleteVertexArrays(1, &VAO_2Ts);
+		glDeleteBuffers(1, &VBO_2Ts);
 	}
 }

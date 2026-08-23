@@ -17,38 +17,8 @@ int main() {
 
 	unsigned int shaderProgram = createShaderProgram();
 	
-	// vertex data
-	float vertices[] = {
-		0.0f, 0.5f, 0.0f,	// 0 - center top
-		-0.5f, -0.5f, 0.0f,	// 1 - bottom left
-		0.5f, -0.5f, 0.0f,	// 2 - bottom right
-		-0.5f, 0.5f, 0.0f,	// 3 - top left
-		0.5f, 0.5f, 0.0f,	// 4 - top right
-		0.0f, -0.5f, 0.0f,	// 5 - center bottom
-	};
-
-	unsigned int indices[] = {
-		3, 2, 4, // first triangle
-		0, 4, 1 // second triangle
-	};
-
-	//unsigned int VBO, VAO, EBO;
-	//glGenVertexArrays(1, &VAO);
-	//glGenBuffers(1, &VBO);
-	//glGenBuffers(1, &EBO);
-
-	//glBindVertexArray(VAO);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-
 	exercise::base();
+	exercise::base2Ts();
 
 	if (isPolygonMode())
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -58,7 +28,7 @@ int main() {
 		processInput(window);
 
 		// rendering commands
-		glClearColor(0.2f, 0.3, 0.3f, 1.0f);
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
@@ -66,9 +36,15 @@ int main() {
 		if (exercise::type == exercise::DEFAULT_TRIANGLE) {
 			exercise::drawDefaultTriangle();
 		}
-		//glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		else if (exercise::type == exercise::RECTANGLE) {
+			exercise::drawRectangle();
+		}
+		else if (exercise::type == exercise::TWO_TRIANGLES) {
+			exercise::draw2Ts();
+		}
+		else if (exercise::type == exercise::TWO_TRIANGLES_2VAO_2VBO) {
+			exercise::draw2Ts2VAOs2VBOs();
+		}
 
 		// check and call events and swap buffers
 		glfwSwapBuffers(window);
