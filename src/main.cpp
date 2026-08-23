@@ -1,11 +1,14 @@
+#include <functional>
+#include <unordered_map>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "exercise.hpp"
 #include "init.hpp"
 #include "input.hpp"
 #include "render-state.hpp"
 #include "shader.hpp"
-#include "exercise.hpp"
 
 
 int main() {
@@ -15,13 +18,21 @@ int main() {
 		return -1;
 	}
 
-	unsigned int shaderProgram = createShaderProgram();
+	auto [shaderProgramOrange, shaderProgramYellow] = createShaderPrograms();
 	
 	exercise::base();
 	exercise::base2Ts();
 
 	if (isPolygonMode())
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	const std::unordered_map<exercise::Type, std::function<void()>> drawFunction = {
+		{exercise::DEFAULT_TRIANGLE, [] { exercise::drawDefaultTriangle(); }},
+		{exercise::RECTANGLE, [] { exercise::drawRectangle(); }},
+		{exercise::TWO_TRIANGLES, [] { exercise::draw2Ts(); }},
+		{exercise::TWO_TRIANGLES_2VAO_2VBO, [] { exercise::draw2Ts2VAOs2VBOs();  }},
+		{exercise::TWO_TRIANGLES_DIFF_COL, [&] { exercise::draw2TsDiffCol(shaderProgramYellow, shaderProgramOrange); }},
+	};
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
@@ -31,20 +42,10 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
+		if (exercise::type != exercise::TWO_TRIANGLES_DIFF_COL)
+			glUseProgram(shaderProgramOrange);
 
-		if (exercise::type == exercise::DEFAULT_TRIANGLE) {
-			exercise::drawDefaultTriangle();
-		}
-		else if (exercise::type == exercise::RECTANGLE) {
-			exercise::drawRectangle();
-		}
-		else if (exercise::type == exercise::TWO_TRIANGLES) {
-			exercise::draw2Ts();
-		}
-		else if (exercise::type == exercise::TWO_TRIANGLES_2VAO_2VBO) {
-			exercise::draw2Ts2VAOs2VBOs();
-		}
+		drawFunction.at(exercise::type)();
 
 		// check and call events and swap buffers
 		glfwSwapBuffers(window);
@@ -52,7 +53,8 @@ int main() {
 	}
 
 	exercise::clean();
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(shaderProgramOrange);
+	glDeleteProgram(shaderProgramYellow);
 
 	glfwTerminate();
 	return 0;
