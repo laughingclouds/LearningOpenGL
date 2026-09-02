@@ -90,6 +90,10 @@ static GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
 
 	statusCheck(glGetProgramiv, glGetProgramInfoLog, shaderProgram, GL_LINK_STATUS, QueryType::PROGRAM);
 
+	// No longer need shader objects after program linked
+	glDetachShader(shaderProgram, vertexShader);
+	glDetachShader(shaderProgram, fragmentShader);
+
 	return shaderProgram;
 }
 
