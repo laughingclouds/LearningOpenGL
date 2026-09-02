@@ -43,7 +43,7 @@ static GLuint VBO_2Ts, VAO_2Ts;
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
 
-	void draw2TsDiffCol(GLuint shaderProg1, GLuint shaderProg2) {
+	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2) {
 		glUseProgram(shaderProg1);
 		draw2Ts(3);
 

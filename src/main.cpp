@@ -18,6 +18,8 @@ int main() {
 		return -1;
 	}
 
+	glfwSetKeyCallback(window, keyCallback);
+
 	auto [shaderProgramOrange, shaderProgramYellow] = createShaderPrograms();
 	
 	exercise::base();
@@ -36,7 +38,7 @@ int main() {
 
 	while (!glfwWindowShouldClose(window)) {
 		// input
-		processInput(window);
+		//processInput(window);
 
 		// rendering commands
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -45,6 +47,7 @@ int main() {
 		if (exercise::type != exercise::TWO_TRIANGLES_DIFF_COL)
 			glUseProgram(shaderProgramOrange);
 
+		// Call draw function
 		drawFunction.at(exercise::type)();
 
 		// check and call events and swap buffers

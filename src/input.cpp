@@ -8,47 +8,38 @@
 #include "exercise.hpp"
 #include "render-state.hpp"
 
-static void processExerciseSelection(GLFWwindow* window, bool ctrlPressed) {
-	if (!ctrlPressed)
-		return;
-
-	static constexpr std::array exerciseBindings = {
-		std::pair{GLFW_KEY_0, exercise::DEFAULT_TRIANGLE},
-		std::pair{GLFW_KEY_1, exercise::RECTANGLE},
-		std::pair{GLFW_KEY_2, exercise::TWO_TRIANGLES},
-		std::pair{GLFW_KEY_3, exercise::TWO_TRIANGLES_2VAO_2VBO},
-		std::pair{GLFW_KEY_4, exercise::TWO_TRIANGLES_DIFF_COL},
-	};
-
-	for (const auto& [key, type] : exerciseBindings) {
-		if (glfwGetKey(window, key) == GLFW_PRESS) {
-			exercise::type = type;
-			break;
-		}
-	}
+void processInput(GLFWwindow* window) {
 }
 
-void processInput(GLFWwindow* window) {
-	static bool key_p_ispress = false;
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action != GLFW_PRESS) return; // act only on key press not release/repeat/etc.
 
-	bool key_ctrl_ispress =
-		(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) ||
-		(glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
+	const bool ctrlPressed = (mods & GLFW_MOD_CONTROL) != 0;
 
-	if (key_ctrl_ispress && (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)) {
+	if (ctrlPressed && (key == GLFW_KEY_Q)) {
 		glfwSetWindowShouldClose(window, true);
+		return;
 	}
 
-	// enter only if key was not pressed before
-	if (key_ctrl_ispress && !key_p_ispress && (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)) {
+	if (ctrlPressed && (key == GLFW_KEY_P)) {
 		toggle_glPolygonMode();
-		key_p_ispress = true; // now key is in "pressing" state
-		// don't enter if-block again till the key is released
+		return;
 	}
 
-	if ((glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)) {
-		key_p_ispress = false; // key no longer pressed
-	}
+	if (ctrlPressed) {
+		static constexpr std::array exerciseBindings = {
+			std::pair{GLFW_KEY_0, exercise::DEFAULT_TRIANGLE},
+			std::pair{GLFW_KEY_1, exercise::RECTANGLE},
+			std::pair{GLFW_KEY_2, exercise::TWO_TRIANGLES},
+			std::pair{GLFW_KEY_3, exercise::TWO_TRIANGLES_2VAO_2VBO},
+			std::pair{GLFW_KEY_4, exercise::TWO_TRIANGLES_DIFF_COL},
+		};
 
-	processExerciseSelection(window, key_ctrl_ispress);
+		for (const auto& [boundKey, exerciseType] : exerciseBindings) {
+			if (key == boundKey) {
+				exercise::type = exerciseType;
+				return;
+			}
+		}
+	}
 }
