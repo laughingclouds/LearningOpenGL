@@ -13,10 +13,10 @@ void main() {
 )";
 
 const char* fragmentShaderSource = R"(
-#version 330 core
+#version 430 core
 out vec4 FragColor;
 
-layout (loocation = 20) uniform vec4 uColor;
+layout (location = 20) uniform vec4 uColor;
 
 void main() {
 	FragColor = uColor;
