@@ -1,5 +1,6 @@
+#include "shader.hpp"
+
 #include <iostream>
-#include <utility>
 
 #include <glad/glad.h>
 
@@ -41,6 +42,12 @@ void main() {
 }
 )";
 
+static bool error_in_shader_program_compilation = false;
+
+bool isError() {
+	return error_in_shader_program_compilation;
+}
+
 enum class QueryType {
 	VERTEX,
 	FRAGMENT,
@@ -50,7 +57,7 @@ enum class QueryType {
 using statusQuery_t = void (*) (GLuint, GLenum, GLint*);
 using infoLog_t = void (*) (GLuint, GLsizei, GLsizei*, GLchar*);
 
-static  const char* errorMessage(QueryType qt) {
+static const char* errorMessage(QueryType qt) {
 	switch (qt) {
 	case QueryType::VERTEX: return "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n";
 	case QueryType::FRAGMENT: return "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n";
@@ -68,6 +75,8 @@ static void statusCheck(statusQuery_t statusQuery, infoLog_t getInfoLog, GLuint 
 	if (!success) {
 		getInfoLog(object, 512, nullptr, infoLog);
 		std::cerr << errorMessage(qt) << infoLog;
+		
+		error_in_shader_program_compilation = true;
 	}
 }
 

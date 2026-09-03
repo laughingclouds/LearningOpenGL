@@ -36,7 +36,7 @@ int main() {
 		{exercise::TWO_TRIANGLES_DIFF_COL, [&] { exercise::draw2TsDiffCol(shaderProgramYellow, shaderProgramOrange); }},
 	};
 
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window) && !isError()) {
 		// input
 		//processInput(window);
 
@@ -44,6 +44,7 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// set default color (orange) for most exercises
 		if (exercise::type != exercise::TWO_TRIANGLES_DIFF_COL)
 			glUseProgram(shaderProgramOrange);
 

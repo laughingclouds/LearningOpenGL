@@ -6,7 +6,6 @@
 */
 static bool isPolygon = false;
 
-/* Toggle Polygon mode and return new isPolygon value */
 bool toggle_glPolygonMode() {
 	if (isPolygon) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

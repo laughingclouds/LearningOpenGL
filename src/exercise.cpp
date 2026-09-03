@@ -43,6 +43,8 @@ static GLuint VBO_2Ts, VAO_2Ts;
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
 
+	const int glsl_aPosAttribute = 0;
+
 	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2) {
 		glUseProgram(shaderProg1);
 		draw2Ts(3);
@@ -83,8 +85,8 @@ namespace exercise {
 		glBindBuffer(GL_ARRAY_BUFFER, VBO_2Ts);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_2Ts), vertices_2Ts, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(glsl_aPosAttribute, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
+		glEnableVertexAttribArray(glsl_aPosAttribute);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -102,8 +104,8 @@ namespace exercise {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(glsl_aPosAttribute, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(glsl_aPosAttribute);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind (VBO remains attached to VAO)
 	}
