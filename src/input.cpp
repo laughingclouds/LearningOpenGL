@@ -31,8 +31,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			std::pair{GLFW_KEY_0, exercise::DEFAULT_TRIANGLE},
 			std::pair{GLFW_KEY_1, exercise::RECTANGLE},
 			std::pair{GLFW_KEY_2, exercise::TWO_TRIANGLES},
-			std::pair{GLFW_KEY_3, exercise::TWO_TRIANGLES_2VAO_2VBO},
-			std::pair{GLFW_KEY_4, exercise::TWO_TRIANGLES_DIFF_COL},
+			std::pair{GLFW_KEY_3, exercise::TWO_TRIANGLES_DIFF_COL},
 		};
 
 		for (const auto& [boundKey, exerciseType] : exerciseBindings) {

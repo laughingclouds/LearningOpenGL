@@ -20,10 +20,12 @@ int main() {
 
 	glfwSetKeyCallback(window, keyCallback);
 
-	auto [shaderProgramOrange, shaderProgramYellow] = createShaderPrograms();
+	GLuint shaderProgram = createShaderPrograms();
+	glUseProgram(shaderProgram);
+	// set default color (orange) for most exercises
+	glUniform4fv(exercise::glsl_uColorAttribute, 1, orangeColVec);
 	
 	exercise::base();
-	exercise::base2Ts();
 
 	if (isPolygonMode())
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -32,8 +34,7 @@ int main() {
 		{exercise::DEFAULT_TRIANGLE, [] { exercise::drawDefaultTriangle(); }},
 		{exercise::RECTANGLE, [] { exercise::drawRectangle(); }},
 		{exercise::TWO_TRIANGLES, [] { exercise::draw2Ts(); }},
-		{exercise::TWO_TRIANGLES_2VAO_2VBO, [] { exercise::draw2Ts2VAOs2VBOs();  }},
-		{exercise::TWO_TRIANGLES_DIFF_COL, [&] { exercise::draw2TsDiffCol(shaderProgramYellow, shaderProgramOrange); }},
+		{exercise::TWO_TRIANGLES_DIFF_COL, [&] { exercise::draw2TsDiffCol(); }},
 	};
 
 	while (!glfwWindowShouldClose(window) && !isError()) {
@@ -44,10 +45,6 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// set default color (orange) for most exercises
-		if (exercise::type != exercise::TWO_TRIANGLES_DIFF_COL)
-			glUseProgram(shaderProgramOrange);
-
 		// Call draw function
 		drawFunction.at(exercise::type)();
 
@@ -57,8 +54,7 @@ int main() {
 	}
 
 	exercise::clean();
-	glDeleteProgram(shaderProgramOrange);
-	glDeleteProgram(shaderProgramYellow);
+	glDeleteProgram(shaderProgram);
 
 	glfwTerminate();
 	return 0;

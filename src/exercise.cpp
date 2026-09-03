@@ -3,92 +3,70 @@
 #include <glad/glad.h>
 
 // vertex data
-float vertices_2Ts[] = {
-	// triangle T1
-	-0.5f, 0.0f, 0.0f,	// 0: T1 - Left
-	-0.25f, 0.5f, 0.0f,	// 1: T1 - Top
-	0.0f, 0.0f, 0.0f,	// 2: T1 - Right
-	// triangle T2
-	0.0f, 0.0f, 0.0f,	// 3: T2 - Left
-	0.25f, 0.5f, 0.0f,	// 4: T2 - Top
-	0.5f, 0.0f, 0.0f,	// 5: T2 - Right
-};
-
 float vertices[] = {
-	// DEFAULT_TRIANGLE
-	0.0f, 0.5f, 0.0f,	// 0 - center top
-	-0.5f, -0.5f, 0.0f,	// 1 - bottom left
-	0.5f, -0.5f, 0.0f,	// 2 - bottom right
+	// DEFAULT_TRIANGLE / Rectangle
+	0.0f, 0.5f, 0.0f,	// 00 - center top
+	-0.5f, -0.5f, 0.0f,	// 01 - bottom left
+	0.5f, -0.5f, 0.0f,	// 02 - bottom right
 	//
-	-0.5f, 0.5f, 0.0f,	// 3 - top left
-	0.5f, 0.5f, 0.0f,	// 4 - top right
-	0.0f, -0.5f, 0.0f,	// 5 - center bottom
-	//
-	0.0f, 0.0f, 0.0f,	// 6 T2
-	0.25f, 0.5f, 0.0f,	// 7 T2
-	0.5f, 0.0f, 0.0f,	// 8 T2
+	-0.5f, 0.5f, 0.0f,	// 03 - top left
+	0.5f, 0.5f, 0.0f,	// 04 - top right
+	0.0f, -0.5f, 0.0f,	// 05 - center bottom
+	// Triangle T1
+	-0.5f, 0.0f, 0.0f,	// 06: T1 - Left
+	-0.25f, 0.5f, 0.0f,	// 07: T1 - Top
+	0.0f, 0.0f, 0.0f,	// 08: T1 - Right
+	// Triangle T2
+	0.0f, 0.0f, 0.0f,	// 09: T2 - Left
+	0.25f, 0.5f, 0.0f,	// 10: T2 - Top
+	0.5f, 0.0f, 0.0f,	// 11: T2 - Right
 };
 
+// referencing vertices[]
 unsigned int indices[] = {
+	// default triangle
+	0, 1, 2,
+	// rectangle
 	3, 1, 2,	// first triangle
 	4, 3, 2,	// second triangle
-	6, 7, 8,	// T2
+	// Triangle T1
+	6, 7, 8,
+	// Triangle T2
+	9, 10, 11,	// T2
 };
 
 static GLuint VBO, VAO, EBO;
 
-// Two triangles
-static GLuint VBO_2Ts, VAO_2Ts;
-
 namespace exercise {
 	Type type = DEFAULT_TRIANGLE;
 
+	// refer shader.cpp for location values
 	const int glsl_aPosAttribute = 0;
+	const int glsl_uColorAttribute = 20;
 
-	void draw2TsDiffCol(unsigned int shaderProg1, unsigned int shaderProg2) {
-		glUseProgram(shaderProg1);
-		draw2Ts(3);
-
-		glUseProgram(shaderProg2);
+	void draw2TsDiffCol() {
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
-	}
-
-	void draw2Ts2VAOs2VBOs() {
-		draw2Ts(3);
-
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GL_UNSIGNED_INT)));
+		glUniform4fv(glsl_uColorAttribute, 1, orangeColVec); // change color to orange
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(9 * sizeof(GL_UNSIGNED_INT)));
+				
+		glUniform4fv(glsl_uColorAttribute, 1, yellowColVec); // change color to yellow
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(12 * sizeof(GL_UNSIGNED_INT)));
 	}
 
 	void draw2Ts(int count) {
-		glBindVertexArray(VAO_2Ts);
-		glDrawArrays(GL_TRIANGLES, 0, count);
+		glBindVertexArray(VAO);
+		glUniform4fv(glsl_uColorAttribute, 1, orangeColVec); // change color to orange
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(9 * sizeof(GL_UNSIGNED_INT)));
 	}
 
 	void drawRectangle() {
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(3 * sizeof(GL_UNSIGNED_INT)));
 	}
 
 	void drawDefaultTriangle() {
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	}
-
-	void base2Ts() {
-		glGenVertexArrays(1, &VAO_2Ts);
-		glGenBuffers(1, &VBO_2Ts);
-
-		glBindVertexArray(VAO_2Ts);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_2Ts);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_2Ts), vertices_2Ts, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(glsl_aPosAttribute, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
-		glEnableVertexAttribArray(glsl_aPosAttribute);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 	}
 
 	void base() {	
@@ -114,8 +92,5 @@ namespace exercise {
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
-
-		glDeleteVertexArrays(1, &VAO_2Ts);
-		glDeleteBuffers(1, &VBO_2Ts);
 	}
 }
