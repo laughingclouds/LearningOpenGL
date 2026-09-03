@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 
 const char* vertexShaderSource = R"(
-#version 330 core
+#version 430 core
 layout (location = 0) in vec3 aPos;
 
 void main() {
@@ -106,18 +106,15 @@ static GLuint createProgram(GLuint vertexShader, GLuint fragmentShader) {
 	return shaderProgram;
 }
 
-std::pair<GLuint, GLuint> createShaderPrograms() {
+GLuint createShaderPrograms() {
 	GLuint vertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource, QueryType::VERTEX);
-	GLuint fragmentShaderOrange = createShader(GL_FRAGMENT_SHADER, fragmentShaderSourceOrange, QueryType::FRAGMENT);
-	GLuint fragmentShaderYellow = createShader(GL_FRAGMENT_SHADER, fragmentShaderSourceYellow, QueryType::FRAGMENT);
+	GLuint fragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource, QueryType::FRAGMENT);
 
 	// shader program
-	GLuint shaderProgramOrange = createProgram(vertexShader, fragmentShaderOrange);
-	GLuint shaderProgramYellow = createProgram(vertexShader, fragmentShaderYellow);
+	GLuint shaderProgram = createProgram(vertexShader, fragmentShader);
 
 	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShaderOrange);
-	glDeleteShader(fragmentShaderYellow);
+	glDeleteShader(fragmentShader);
 
-	return std::pair{shaderProgramOrange, shaderProgramYellow};
+	return shaderProgram;
 }
